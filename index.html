@@ -1,632 +1,660 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>BATERIAS!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="carinha.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Itim&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="carinha.png" type="image/x-icon" />
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Itim', cursive;
-            margin: 0;
-            padding: 0;
-            border: 0;
-        }
-        body {
-            margin: 0;
-            overflow: hidden;
-            position: relative;
-            width: 100vw;
-            height: 80vh;
-            background: #2b2b2b;
-        }
-        .player {
-            position: absolute;
-            width: 62px;
-            height: 70px;
-            background-size: cover;
-            background-position: center;
-        }
-        .player-name {
-            position: absolute;
-            top: -12px;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: #ffffff;
-            pointer-events: none;
-            user-select: none;
-            text-align: center;
-        }
-        .battery {
-            position: absolute;
-            width: 42px;
-            height: 42px;
-            background: url('battery.png') no-repeat center center;
-            background-size: contain;
-        }
-        #battery-box {
-            position: fixed;
-            background-image: url('battery-box.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            width: 80px;
-            height: 80px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 8px;
-        }
-        #energy-bar {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            height: 20px;
-            background: #555;
-            border-radius: 10px;
-            overflow: hidden;
-            z-index: 5;
-        }
-        #energy {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, #000000, #ff3869);
-        }
-        #energy-percentage {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 16px;
-            z-index: 6;
-            text-align: center;
-        }
-        #game-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 48px;
-            z-index: 10;
-            display: none;
-        }
+      * {
+        box-sizing: border-box;
+        font-family: "Itim", cursive;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      body {
+        margin: 0;
+        overflow: hidden;
+        position: relative;
+        width: 100vw;
+        height: 80vh;
+        background: #2b2b2b;
+      }
+      .player {
+        position: absolute;
+        width: 62px;
+        height: 70px;
+        background-size: cover;
+        background-position: center;
+      }
+      .player-name {
+        position: absolute;
+        top: -12px;
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        color: #ffffff;
+        pointer-events: none;
+        user-select: none;
+        text-align: center;
+      }
+      .battery {
+        position: absolute;
+        width: 42px;
+        height: 42px;
+        background: url("battery.png") no-repeat center center;
+        background-size: contain;
+      }
+      #battery-box {
+        position: fixed;
+        background-image: url("battery-box.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        width: 80px;
+        height: 80px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 8px;
+      }
+      #energy-bar {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        height: 20px;
+        background: #555;
+        border-radius: 10px;
+        overflow: hidden;
+        z-index: 5;
+      }
+      #energy {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #000000, #ff3869);
+      }
+      #energy-percentage {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 16px;
+        z-index: 6;
+        text-align: center;
+      }
+      #game-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 48px;
+        z-index: 10;
+        display: none;
+      }
+      #joystick {
+        position: absolute;
+        bottom: calc(20% - 75px);
+        left: calc(20% - 75px);
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        touch-action: none;
+        display: none;
+      }
+      #joystick-handle {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 50%;
+      }
+      .player .battery-icon {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        background: url("battery.png") no-repeat center center;
+        background-size: contain;
+        top: -40px;
+        left: 10px;
+      }
+      #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(19, 19, 19, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+      }
+      #overlay.hidden {
+        display: none;
+      }
+      #nameForm {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #nameForm input {
+        padding: 20px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        width: 250px;
+        border-radius: 8px;
+      }
+      #nameForm button {
+        padding: 10px 20px;
+        font-size: 16px;
+        width: 250px;
+        border-radius: 8px;
+        background-color: #ff3869;
+        color: black;
+      }
+      label {
+        color: white;
+        font-size: 30px;
+      }
+      @media (pointer: coarse) {
         #joystick {
-            position: absolute;
-            bottom: calc(20% - 75px);
-            left: calc(20% - 75px);
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            touch-action: none;
-            display: none;
+          display: block;
         }
-        #joystick-handle {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            left: 50%;
-            top: 50%;
-        }
-        .player .battery-icon {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            background: url('battery.png') no-repeat center center;
-            background-size: contain;
-            top: -40px;
-            left: 10px;
-        }
-        #overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(19, 19, 19, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-        #overlay.hidden {
-            display: none;
-        }
-        #nameForm {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #nameForm input {
-            padding: 20px;
-            font-size: 16px;
-            margin-bottom: 10px;
-            margin-top: 10px;
-            width: 250px;
-            border-radius: 8px;
-        }
-        #nameForm button {
-            padding: 10px 20px;
-            font-size: 16px;
-            width: 250px;
-            border-radius: 8px;
-            background-color: #FF3869;
-            color: black;
-        }
-        label {
-            color: white;
-            font-size: 30px;
-        }
-        @media (pointer: coarse) {
-            #joystick {
-                display: block;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="energy-bar">
-        <div id="energy"></div>
+      <div id="energy"></div>
     </div>
     <div id="energy-percentage">100%</div>
     <div id="game-message"></div>
     <div id="battery-box"></div>
     <div id="joystick">
-        <div id="joystick-handle"></div>
+      <div id="joystick-handle"></div>
     </div>
     <div id="overlay">
-        <form id="nameForm">
-            <label for="playerName">Escolha seu nome:</label>
-            <input type="text" id="playerName" maxlength="20" required />
-            <button type="submit">Entrar</button>
-        </form>
+      <form id="nameForm">
+        <label for="playerName">Escolha seu nome:</label>
+        <input type="text" id="playerName" maxlength="20" required />
+        <button type="submit">Entrar</button>
+      </form>
     </div>
 
     <script>
-        const MAX_PLAYERS = 20;
-        const wsUrl = 'wss://SERVIDOR DO JOGO';
-        let ws;
-        let playerId = null;
-        const players = {};
-        const batteries = {};
-        let energy = 100;
-        let localPlayer = {
-            x: 100,
-            y: 100,
-            direction: 'idle_right',
-            carryingBattery: false
+      const MAX_PLAYERS = 20;
+      const wsUrl = "ws://localhost:8765";
+      let ws;
+      let playerId = null;
+      const players = {};
+      const batteries = {};
+      let energy = 100;
+      let localPlayer = {
+        x: 100,
+        y: 100,
+        direction: "idle_right",
+        carryingBattery: false,
+      };
+      const animationsMapping = {
+        walk_right: "walk_right.gif",
+        walk_left: "walk_left.gif",
+        idle_right: "idle_right.gif",
+        idle_left: "idle_left.gif",
+      };
+      const movementKeys = { w: false, a: false, s: false, d: false };
+      const movement = { x: 0, y: 0 };
+
+      function connectWebSocket(name) {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: "join", name: name }));
+          console.log("Conexão WebSocket estabelecida.");
         };
-        const animationsMapping = {
-            walk_right: 'walk_right.gif',
-            walk_left: 'walk_left.gif',
-            idle_right: 'idle_right.gif',
-            idle_left: 'idle_left.gif'
+
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          console.log("Mensagem recebida:", data);
+
+          if (data.type === "init") {
+            playerId = data.player.id;
+            addPlayer(data.player);
+            hideOverlay();
+          } else if (data.type === "new_player") {
+            addPlayer(data.player);
+          } else if (data.type === "move") {
+            if (data.player.id !== playerId) {
+              updatePlayerPosition(data.player);
+            }
+          } else if (data.type === "remove_player") {
+            removePlayer(data.id);
+          } else if (data.type === "wait") {
+            showWaitMessage();
+          } else if (data.type === "error") {
+            alert(data.message);
+          } else if (data.type === "battery_spawn") {
+            spawnBattery(data.battery);
+          } else if (data.type === "battery_collected") {
+            console.log(`Bateria coletada por: ${data.collectedBy}`);
+            removeBattery(data.batteryId);
+            if (data.collectedBy === playerId) {
+              console.log("Você coletou uma bateria!");
+              localPlayer.carryingBattery = true;
+              updateLocalPlayerUI();
+            }
+          } else if (data.type === "update_energy") {
+            updateEnergy(data.energy);
+          } else if (data.type === "end_game") {
+            endGame();
+          } else if (data.type === "game_reset") {
+            resetGame(data);
+          } else if (data.type === "kick") {
+            showOverlay(data.message);
+          }
         };
-        const movementKeys = { w: false, a: false, s: false, d: false };
-        const movement = { x: 0, y: 0 };
 
-        function connectWebSocket(name) {
-            ws = new WebSocket(wsUrl);
+        ws.onclose = () => {
+          console.log("Conexão WebSocket fechada.");
+          const overlay = document.getElementById("overlay");
+          if (overlay.classList.contains("hidden")) {
+            showOverlay("Conexão perdida com o servidor.");
+          }
+        };
 
-            ws.onopen = () => {
-                ws.send(JSON.stringify({ type: 'join', name: name }));
-                console.log("Conexão WebSocket estabelecida.");
-            };
+        ws.onerror = (error) => {
+          console.error("WebSocket Error:", error);
+        };
+      }
 
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                console.log('Mensagem recebida:', data);
+      function hideOverlay() {
+        const overlay = document.getElementById("overlay");
+        overlay.classList.add("hidden");
+      }
 
-                if (data.type === 'init') {
-                    playerId = data.player.id;
-                    addPlayer(data.player);
-                    hideOverlay();
-                } else if (data.type === 'new_player') {
-                    addPlayer(data.player);
-                } else if (data.type === 'move') {
-                    if (data.player.id !== playerId) {
-                        updatePlayerPosition(data.player);
-                    }
-                } else if (data.type === 'remove_player') {
-                    removePlayer(data.id);
-                } else if (data.type === 'wait') {
-                    showWaitMessage();
-                } else if (data.type === 'error') {
-                    alert(data.message);
-                } else if (data.type === 'battery_spawn') {
-                    spawnBattery(data.battery);
-                } else if (data.type === 'battery_collected') {
-                    console.log(`Bateria coletada por: ${data.collectedBy}`);
-                    removeBattery(data.batteryId);
-                    if (data.collectedBy === playerId) {
-                        console.log('Você coletou uma bateria!');
-                        localPlayer.carryingBattery = true;
-                        updateLocalPlayerUI();
-                    }
-                } else if (data.type === 'update_energy') {
-                    updateEnergy(data.energy);
-                } else if (data.type === 'end_game') {
-                    endGame();
-                } else if (data.type === 'game_reset') {
-                    resetGame(data);
-                } else if (data.type === 'kick') {
-                    showOverlay(data.message);
-                }
-            };
-
-            ws.onclose = () => {
-                console.log("Conexão WebSocket fechada.");
-                const overlay = document.getElementById('overlay');
-                if (overlay.classList.contains('hidden')) {
-                    showOverlay('Conexão perdida com o servidor.');
-                }
-            };
-
-            ws.onerror = (error) => {
-                console.error('WebSocket Error:', error);
-            };
-        }
-
-        function hideOverlay() {
-            const overlay = document.getElementById('overlay');
-            overlay.classList.add('hidden');
-        }
-
-        function showOverlay(message = null) {
-            const overlay = document.getElementById('overlay');
-            if (message) {
-                overlay.innerHTML = `<div style="color: white; font-size: 24px; text-align: center;">${message}</div>`;
-            } else {
-                overlay.innerHTML = `
+      function showOverlay(message = null) {
+        const overlay = document.getElementById("overlay");
+        if (message) {
+          overlay.innerHTML = `<div style="color: white; font-size: 24px; text-align: center;">${message}</div>`;
+        } else {
+          overlay.innerHTML = `
                     <form id="nameForm">
                         <label for="playerName">Escolha seu nome:</label>
                         <input type="text" id="playerName" maxlength="20" required />
                         <button type="submit">Entrar</button>
                     </form>
                 `;
-            }
-            overlay.classList.remove('hidden');
         }
+        overlay.classList.remove("hidden");
+      }
 
-        function addPlayer(player) {
-            if (players[player.id]) return;
+      function addPlayer(player) {
+        if (players[player.id]) return;
 
-            const playerElement = document.createElement('div');
-            playerElement.className = 'player';
-            playerElement.style.backgroundImage = `url(${animationsMapping[player.direction]})`;
-            playerElement.style.left = `${player.x}px`;
-            playerElement.style.top = `${player.y}px`;
-            playerElement.style.filter = `hue-rotate(${player.hue}deg)`;
+        const playerElement = document.createElement("div");
+        playerElement.className = "player";
+        playerElement.style.backgroundImage = `url(${
+          animationsMapping[player.direction]
+        })`;
+        playerElement.style.left = `${player.x}px`;
+        playerElement.style.top = `${player.y}px`;
+        playerElement.style.filter = `hue-rotate(${player.hue}deg)`;
 
-            const nameElement = document.createElement('div');
-            nameElement.className = 'player-name';
-            nameElement.textContent = player.name;
-            playerElement.appendChild(nameElement);
+        const nameElement = document.createElement("div");
+        nameElement.className = "player-name";
+        nameElement.textContent = player.name;
+        playerElement.appendChild(nameElement);
 
-            document.body.appendChild(playerElement);
-            players[player.id] = {
-                element: playerElement,
-                name: player.name,
-                hue: player.hue,
-                x: player.x,
-                y: player.y,
-                direction: player.direction,
-                carryingBattery: player.carryingBattery || false,
-                batteryIcon: null
-            };
-
-            if (player.id === playerId) {
-                localPlayer.element = playerElement;
-            }
-        }
-
-        function updatePlayerPosition(player) {
-            const playerData = players[player.id];
-            if (playerData) {
-                playerData.x = player.x;
-                playerData.y = player.y;
-                playerData.direction = player.direction;
-                playerData.carryingBattery = player.carryingBattery;
-                playerData.element.style.left = `${player.x}px`;
-                playerData.element.style.top = `${player.y}px`;
-                playerData.element.style.backgroundImage = `url(${animationsMapping[player.direction]})`;
-
-                if (playerData.carryingBattery && !playerData.batteryIcon) {
-                    const batteryIcon = document.createElement('div');
-                    batteryIcon.className = 'battery-icon';
-                    playerData.element.appendChild(batteryIcon);
-                    playerData.batteryIcon = batteryIcon;
-                } else if (!playerData.carryingBattery && playerData.batteryIcon) {
-                    playerData.batteryIcon.remove();
-                    playerData.batteryIcon = null;
-                }
-            }
-        }
-
-        function removePlayer(id) {
-            const playerData = players[id];
-            if (playerData) {
-                playerData.element.remove();
-                delete players[id];
-            }
-        }
-
-        function spawnBattery(battery) {
-            const batteryElement = document.createElement('div');
-            batteryElement.className = 'battery';
-            batteryElement.id = `battery-${battery.id}`;
-            batteryElement.style.left = `${battery.x}px`;
-            batteryElement.style.top = `${battery.y}px`;
-
-            const rotation = Math.floor(Math.random() * 360);
-            batteryElement.style.transform = `rotate(${rotation}deg)`;
-
-            document.body.appendChild(batteryElement);
-            batteries[battery.id.toString()] = {
-                element: batteryElement,
-                x: battery.x,
-                y: battery.y
-            };
-        }
-
-        function removeBattery(batteryId) {
-            batteryId = batteryId.toString();
-            const batteryData = batteries[batteryId];
-            if (batteryData) {
-                batteryData.element.remove();
-                delete batteries[batteryId];
-            }
-        }
-
-        function updateEnergy(newEnergy) {
-            energy = newEnergy;
-            const energyBar = document.getElementById('energy');
-            energyBar.style.width = `${energy}%`;
-            const energyPercentage = document.getElementById('energy-percentage');
-            energyPercentage.textContent = `${Math.floor(energy)}%`;
-
-            if (energy <= 0) {
-                endGame();
-            }
-        }
-
-        function endGame() {
-            const gameMessage = document.getElementById('game-message');
-            let countdown = 10;
-            gameMessage.style.display = 'block';
-            gameMessage.textContent = `Novo jogo em ${countdown}...`;
-
-            const countdownInterval = setInterval(() => {
-                countdown--;
-                if (countdown > 0) {
-                    gameMessage.textContent = `Novo jogo em ${countdown}...`;
-                } else {
-                    clearInterval(countdownInterval);
-                    gameMessage.style.display = 'none';
-                }
-            }, 1000);
-        }
-
-        function resetGame(data) {
-            energy = data.energy;
-            updateEnergy(energy);
-
-            for (let batteryId in batteries) {
-                removeBattery(batteryId);
-            }
-
-            data.batteries.forEach((battery) => {
-                spawnBattery(battery);
-            });
-
-            data.players.forEach((playerData) => {
-                let player = players[playerData.id];
-                if (!player) {
-                    addPlayer(playerData);
-                    player = players[playerData.id];
-                }
-                player.x = playerData.x;
-                player.y = playerData.y;
-                player.direction = playerData.direction;
-                player.carryingBattery = playerData.carryingBattery;
-                if (player.batteryIcon) {
-                    player.batteryIcon.remove();
-                    player.batteryIcon = null;
-                }
-                updatePlayerPosition(player);
-            });
-        }
-
-        function showWaitMessage() {
-            const overlay = document.getElementById('overlay');
-            overlay.innerHTML = '<div>Aguardando espaço disponível...</div>';
-            overlay.classList.remove('hidden');
-        }
-
-        window.addEventListener('keydown', (event) => {
-            if (['w', 'a', 's', 'd'].includes(event.key)) {
-                movementKeys[event.key] = true;
-            }
-        });
-
-        window.addEventListener('keyup', (event) => {
-            if (['w', 'a', 's', 'd'].includes(event.key)) {
-                movementKeys[event.key] = false;
-            }
-        });
-
-        function setupJoystick() {
-            const joystick = document.getElementById('joystick');
-            const handle = document.getElementById('joystick-handle');
-
-            let isActive = false;
-
-            joystick.addEventListener('touchstart', startJoystick);
-            joystick.addEventListener('touchmove', moveJoystick);
-            joystick.addEventListener('touchend', stopJoystick);
-            joystick.addEventListener('touchcancel', stopJoystick);
-
-            function startJoystick(event) {
-                isActive = true;
-                moveJoystick(event);
-            }
-
-            function moveJoystick(event) {
-                if (!isActive) return;
-                event.preventDefault();
-                const touch = event.targetTouches[0];
-                const rect = joystick.getBoundingClientRect();
-                const x = touch.clientX - rect.left - rect.width / 2;
-                const y = touch.clientY - rect.top - rect.height / 2;
-                const maxDistance = rect.width / 2;
-                const distance = Math.min(Math.sqrt(x * x + y * y), maxDistance);
-                const angle = Math.atan2(y, x);
-
-                movement.x = (distance / maxDistance) * Math.cos(angle);
-                movement.y = (distance / maxDistance) * Math.sin(angle);
-
-                handle.style.left = `${50 + (movement.x * 50)}%`;
-                handle.style.top = `${50 + (movement.y * 50)}%`;
-            }
-
-            function stopJoystick(event) {
-                isActive = false;
-                movement.x = 0;
-                movement.y = 0;
-                handle.style.left = '50%';
-                handle.style.top = '50%';
-            }
-        }
-
-        function updateLocalPlayer() {
-            if (!playerId || !ws || ws.readyState !== WebSocket.OPEN) return;
-
-            let moved = false;
-            let newDirection = localPlayer.direction;
-
-            if (movementKeys.w) {
-                localPlayer.y -= 5;
-                moved = true;
-            }
-            if (movementKeys.s) {
-                localPlayer.y += 5;
-                moved = true;
-            }
-            if (movementKeys.a) {
-                localPlayer.x -= 5;
-                newDirection = 'walk_left';
-                moved = true;
-            }
-            if (movementKeys.d) {
-                localPlayer.x += 5;
-                newDirection = 'walk_right';
-                moved = true;
-            }
-
-            if (movement.x !== 0 || movement.y !== 0) {
-                localPlayer.x += movement.x * 5;
-                localPlayer.y += movement.y * 5;
-                moved = true;
-                if (movement.x > 0) {
-                    newDirection = 'walk_right';
-                } else if (movement.x < 0) {
-                    newDirection = 'walk_left';
-                }
-            }
-
-            if (!moved) {
-                newDirection = localPlayer.direction.includes('left') ? 'idle_left' : 'idle_right';
-            }
-
-            localPlayer.direction = newDirection;
-
-            if (localPlayer.element) {
-                localPlayer.element.style.left = `${localPlayer.x}px`;
-                localPlayer.element.style.top = `${localPlayer.y}px`;
-                localPlayer.element.style.backgroundImage = `url(${animationsMapping[newDirection]})`;
-            }
-
-            if (!localPlayer.carryingBattery) {
-                for (let batteryId in batteries) {
-                    const battery = batteries[batteryId];
-                    if (isColliding(localPlayer, battery)) {
-                        console.log(`Tentando coletar bateria: ${batteryId}`);
-                        ws.send(JSON.stringify({ type: 'collect_battery', battery_id: batteryId.toString() }));
-                        break;
-                    }
-                }
-            }
-
-            if (localPlayer.carryingBattery && isAtBatteryBox(localPlayer)) {
-                localPlayer.carryingBattery = false;
-                updateLocalPlayerUI();
-                ws.send(JSON.stringify({ type: 'deliver_battery' }));
-            }
-
-            ws.send(JSON.stringify({
-                type: 'move',
-                x: localPlayer.x,
-                y: localPlayer.y,
-                direction: localPlayer.direction,
-                carryingBattery: localPlayer.carryingBattery
-            }));
-        }
-
-        function isColliding(a, b) {
-            return !(a.x + 52 < b.x || a.x > b.x + 32 || a.y + 60 < b.y || a.y > b.y + 32);
-        }
-
-        function isAtBatteryBox(player) {
-            const box = document.getElementById('battery-box').getBoundingClientRect();
-            const playerRect = localPlayer.element.getBoundingClientRect();
-            return !(playerRect.right < box.left || playerRect.left > box.right || playerRect.bottom < box.top || playerRect.top > box.bottom);
-        }
-
-        document.getElementById('nameForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('playerName').value.trim();
-            if (name.length > 0) {
-                localStorage.setItem('playerName', name);
-                connectWebSocket(name);
-            }
-        });
-
-        function updateLocalPlayerUI() {
-            const playerData = players[playerId];
-            if (playerData) {
-                if (localPlayer.carryingBattery && !playerData.batteryIcon) {
-                    const batteryIcon = document.createElement('div');
-                    batteryIcon.className = 'battery-icon';
-                    playerData.element.appendChild(batteryIcon);
-                    playerData.batteryIcon = batteryIcon;
-                } else if (!localPlayer.carryingBattery && playerData.batteryIcon) {
-                    playerData.batteryIcon.remove();
-                    playerData.batteryIcon = null;
-                }
-            }
-        }
-
-        window.onload = () => {
-            setupJoystick();
-            const storedName = localStorage.getItem('playerName');
-            if (storedName) {
-                document.getElementById('playerName').value = storedName;
-                connectWebSocket(storedName);
-            }
-            setInterval(() => {
-                updateLocalPlayer();
-            }, 1000 / 60);
+        document.body.appendChild(playerElement);
+        players[player.id] = {
+          element: playerElement,
+          name: player.name,
+          hue: player.hue,
+          x: player.x,
+          y: player.y,
+          direction: player.direction,
+          carryingBattery: player.carryingBattery || false,
+          batteryIcon: null,
         };
+
+        if (player.id === playerId) {
+          localPlayer.element = playerElement;
+        }
+      }
+
+      function updatePlayerPosition(player) {
+        const playerData = players[player.id];
+        if (playerData) {
+          playerData.x = player.x;
+          playerData.y = player.y;
+          playerData.direction = player.direction;
+          playerData.carryingBattery = player.carryingBattery;
+          playerData.element.style.left = `${player.x}px`;
+          playerData.element.style.top = `${player.y}px`;
+          playerData.element.style.backgroundImage = `url(${
+            animationsMapping[player.direction]
+          })`;
+
+          if (playerData.carryingBattery && !playerData.batteryIcon) {
+            const batteryIcon = document.createElement("div");
+            batteryIcon.className = "battery-icon";
+            playerData.element.appendChild(batteryIcon);
+            playerData.batteryIcon = batteryIcon;
+          } else if (!playerData.carryingBattery && playerData.batteryIcon) {
+            playerData.batteryIcon.remove();
+            playerData.batteryIcon = null;
+          }
+        }
+      }
+
+      function removePlayer(id) {
+        const playerData = players[id];
+        if (playerData) {
+          playerData.element.remove();
+          delete players[id];
+        }
+      }
+
+      function spawnBattery(battery) {
+        const batteryElement = document.createElement("div");
+        batteryElement.className = "battery";
+        batteryElement.id = `battery-${battery.id}`;
+        batteryElement.style.left = `${battery.x}px`;
+        batteryElement.style.top = `${battery.y}px`;
+
+        const rotation = Math.floor(Math.random() * 360);
+        batteryElement.style.transform = `rotate(${rotation}deg)`;
+
+        document.body.appendChild(batteryElement);
+        batteries[battery.id.toString()] = {
+          element: batteryElement,
+          x: battery.x,
+          y: battery.y,
+        };
+      }
+
+      function removeBattery(batteryId) {
+        batteryId = batteryId.toString();
+        const batteryData = batteries[batteryId];
+        if (batteryData) {
+          batteryData.element.remove();
+          delete batteries[batteryId];
+        }
+      }
+
+      function updateEnergy(newEnergy) {
+        energy = newEnergy;
+        const energyBar = document.getElementById("energy");
+        energyBar.style.width = `${energy}%`;
+        const energyPercentage = document.getElementById("energy-percentage");
+        energyPercentage.textContent = `${Math.floor(energy)}%`;
+
+        if (energy <= 0) {
+          endGame();
+        }
+      }
+
+      function endGame() {
+        const gameMessage = document.getElementById("game-message");
+        let countdown = 10;
+        gameMessage.style.display = "block";
+        gameMessage.textContent = `Novo jogo em ${countdown}...`;
+
+        const countdownInterval = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            gameMessage.textContent = `Novo jogo em ${countdown}...`;
+          } else {
+            clearInterval(countdownInterval);
+            gameMessage.style.display = "none";
+          }
+        }, 1000);
+      }
+
+      function resetGame(data) {
+        energy = data.energy;
+        updateEnergy(energy);
+
+        for (let batteryId in batteries) {
+          removeBattery(batteryId);
+        }
+
+        data.batteries.forEach((battery) => {
+          spawnBattery(battery);
+        });
+
+        data.players.forEach((playerData) => {
+          let player = players[playerData.id];
+          if (!player) {
+            addPlayer(playerData);
+            player = players[playerData.id];
+          }
+          player.x = playerData.x;
+          player.y = playerData.y;
+          player.direction = playerData.direction;
+          player.carryingBattery = playerData.carryingBattery;
+          if (player.batteryIcon) {
+            player.batteryIcon.remove();
+            player.batteryIcon = null;
+          }
+          updatePlayerPosition(player);
+        });
+      }
+
+      function showWaitMessage() {
+        const overlay = document.getElementById("overlay");
+        overlay.innerHTML = "<div>Aguardando espaço disponível...</div>";
+        overlay.classList.remove("hidden");
+      }
+
+      window.addEventListener("keydown", (event) => {
+        if (["w", "a", "s", "d"].includes(event.key)) {
+          movementKeys[event.key] = true;
+        }
+      });
+
+      window.addEventListener("keyup", (event) => {
+        if (["w", "a", "s", "d"].includes(event.key)) {
+          movementKeys[event.key] = false;
+        }
+      });
+
+      function setupJoystick() {
+        const joystick = document.getElementById("joystick");
+        const handle = document.getElementById("joystick-handle");
+
+        let isActive = false;
+
+        joystick.addEventListener("touchstart", startJoystick);
+        joystick.addEventListener("touchmove", moveJoystick);
+        joystick.addEventListener("touchend", stopJoystick);
+        joystick.addEventListener("touchcancel", stopJoystick);
+
+        function startJoystick(event) {
+          isActive = true;
+          moveJoystick(event);
+        }
+
+        function moveJoystick(event) {
+          if (!isActive) return;
+          event.preventDefault();
+          const touch = event.targetTouches[0];
+          const rect = joystick.getBoundingClientRect();
+          const x = touch.clientX - rect.left - rect.width / 2;
+          const y = touch.clientY - rect.top - rect.height / 2;
+          const maxDistance = rect.width / 2;
+          const distance = Math.min(Math.sqrt(x * x + y * y), maxDistance);
+          const angle = Math.atan2(y, x);
+
+          movement.x = (distance / maxDistance) * Math.cos(angle);
+          movement.y = (distance / maxDistance) * Math.sin(angle);
+
+          handle.style.left = `${50 + movement.x * 50}%`;
+          handle.style.top = `${50 + movement.y * 50}%`;
+        }
+
+        function stopJoystick(event) {
+          isActive = false;
+          movement.x = 0;
+          movement.y = 0;
+          handle.style.left = "50%";
+          handle.style.top = "50%";
+        }
+      }
+
+      function updateLocalPlayer() {
+        if (!playerId || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+        let moved = false;
+        let newDirection = localPlayer.direction;
+
+        if (movementKeys.w) {
+          localPlayer.y -= 5;
+          moved = true;
+        }
+        if (movementKeys.s) {
+          localPlayer.y += 5;
+          moved = true;
+        }
+        if (movementKeys.a) {
+          localPlayer.x -= 5;
+          newDirection = "walk_left";
+          moved = true;
+        }
+        if (movementKeys.d) {
+          localPlayer.x += 5;
+          newDirection = "walk_right";
+          moved = true;
+        }
+
+        if (movement.x !== 0 || movement.y !== 0) {
+          localPlayer.x += movement.x * 5;
+          localPlayer.y += movement.y * 5;
+          moved = true;
+          if (movement.x > 0) {
+            newDirection = "walk_right";
+          } else if (movement.x < 0) {
+            newDirection = "walk_left";
+          }
+        }
+
+        if (!moved) {
+          newDirection = localPlayer.direction.includes("left")
+            ? "idle_left"
+            : "idle_right";
+        }
+
+        localPlayer.direction = newDirection;
+
+        if (localPlayer.element) {
+          localPlayer.element.style.left = `${localPlayer.x}px`;
+          localPlayer.element.style.top = `${localPlayer.y}px`;
+          localPlayer.element.style.backgroundImage = `url(${animationsMapping[newDirection]})`;
+        }
+
+        if (!localPlayer.carryingBattery) {
+          for (let batteryId in batteries) {
+            const battery = batteries[batteryId];
+            if (isColliding(localPlayer, battery)) {
+              console.log(`Tentando coletar bateria: ${batteryId}`);
+              ws.send(
+                JSON.stringify({
+                  type: "collect_battery",
+                  battery_id: batteryId.toString(),
+                })
+              );
+              break;
+            }
+          }
+        }
+
+        if (localPlayer.carryingBattery && isAtBatteryBox(localPlayer)) {
+          localPlayer.carryingBattery = false;
+          updateLocalPlayerUI();
+          ws.send(JSON.stringify({ type: "deliver_battery" }));
+        }
+
+        ws.send(
+          JSON.stringify({
+            type: "move",
+            x: localPlayer.x,
+            y: localPlayer.y,
+            direction: localPlayer.direction,
+            carryingBattery: localPlayer.carryingBattery,
+          })
+        );
+      }
+
+      function isColliding(a, b) {
+        return !(
+          a.x + 52 < b.x ||
+          a.x > b.x + 32 ||
+          a.y + 60 < b.y ||
+          a.y > b.y + 32
+        );
+      }
+
+      function isAtBatteryBox(player) {
+        const box = document
+          .getElementById("battery-box")
+          .getBoundingClientRect();
+        const playerRect = localPlayer.element.getBoundingClientRect();
+        return !(
+          playerRect.right < box.left ||
+          playerRect.left > box.right ||
+          playerRect.bottom < box.top ||
+          playerRect.top > box.bottom
+        );
+      }
+
+      document.getElementById("nameForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("playerName").value.trim();
+        if (name.length > 0) {
+          localStorage.setItem("playerName", name);
+          connectWebSocket(name);
+        }
+      });
+
+      function updateLocalPlayerUI() {
+        const playerData = players[playerId];
+        if (playerData) {
+          if (localPlayer.carryingBattery && !playerData.batteryIcon) {
+            const batteryIcon = document.createElement("div");
+            batteryIcon.className = "battery-icon";
+            playerData.element.appendChild(batteryIcon);
+            playerData.batteryIcon = batteryIcon;
+          } else if (!localPlayer.carryingBattery && playerData.batteryIcon) {
+            playerData.batteryIcon.remove();
+            playerData.batteryIcon = null;
+          }
+        }
+      }
+
+      window.onload = () => {
+        setupJoystick();
+        const storedName = localStorage.getItem("playerName");
+        if (storedName) {
+          document.getElementById("playerName").value = storedName;
+          connectWebSocket(storedName);
+        }
+        setInterval(() => {
+          updateLocalPlayer();
+        }, 1000 / 60);
+      };
     </script>
-</body>
+  </body>
 </html>
