@@ -30,7 +30,7 @@ async def spawn_batteries():
                 'y': randint(50, 550)
             }
             batteries.append(new_battery)
-            print(f"Nova bateria spawnada: {new_battery}")
+            print(f"[SocketServer] Nova bateria spawnada: {new_battery}")
             await notify_all(json.dumps({'type': 'battery_spawn', 'battery': new_battery}))
         await asyncio.sleep(BATTERY_SPAWN_INTERVAL)
 
@@ -43,7 +43,7 @@ async def decay_energy():
             energy = 0
             await notify_all(json.dumps({'type': 'update_energy', 'energy': energy}))
             await notify_all(json.dumps({'type': 'end_game'}))
-            print("Energia acabou. Iniciando reinício do jogo...")
+            print("[SocketServer]  Energia acabou. Iniciando reinício do jogo...")
             await asyncio.sleep(GAME_RESET_TIME)
             await reset_game()
         else:
@@ -54,7 +54,7 @@ async def reset_game():
     energy = 100
     batteries.clear()
     battery_id_counter = 0
-    print("Jogo resetado.")
+    print("[SocketServer] Jogo resetado.")
 
     for client in connected_clients.values():
         player = client['player']
@@ -98,7 +98,7 @@ async def handler(websocket, path):
             'carryingBattery': False
         }
         connected_clients[player_id] = {'websocket': websocket, 'player': new_player}
-        print(f"Jogador conectado: {new_player}")  # Log de depuração
+        print(f"[SocketServer] Jogador conectado: {new_player}")  # Log de depuração
 
         await websocket.send(json.dumps({'type': 'init', 'player': new_player}))
         await notify_all(json.dumps({'type': 'new_player', 'player': new_player}))
@@ -125,12 +125,12 @@ async def handler(websocket, path):
                 elif data.get('type') == 'collect_battery':
                     battery_id = int(data.get('battery_id'))
                     player = connected_clients[player_id]['player']
-                    print(f"Jogador {player['id']} ({player['name']}) está coletando a bateria {battery_id}")
+                    print(f"[SocketServer]  Jogador {player['id']} ({player['name']}) está coletando a bateria {battery_id}")
                     for battery in batteries:
                         if battery['id'] == battery_id:
                             batteries.remove(battery)
                             player['carryingBattery'] = True
-                            print(f"Bateria {battery_id} coletada por jogador {player['id']}")
+                            print(f"[SocketServer]  Bateria {battery_id} coletada por jogador {player['id']}")
                             await notify_all(json.dumps({
                                 'type': 'battery_collected',
                                 'batteryId': str(battery_id),
@@ -144,7 +144,7 @@ async def handler(websocket, path):
                         player['score'] += 1
                         energy = min(100, energy + 1)
                         await notify_all(json.dumps({'type': 'update_energy', 'energy': energy}))
-                        print(f"Jogador {player['id']} entregou uma bateria. Pontuação: {player['score']}")
+                        print(f"[SocketServer]  Jogador {player['id']} entregou uma bateria. Pontuação: {player['score']}")
             except asyncio.TimeoutError:
                 try:
                     await websocket.send(json.dumps({'type': 'kick', 'message': 'Você foi desconectado por inatividade.'}))
@@ -154,17 +154,17 @@ async def handler(websocket, path):
                 break
 
     except websockets.ConnectionClosed:
-        print(f"Jogador {player_id} desconectado.")
+        print(f"[SocketServer]  Jogador {player_id} desconectado.")
         pass
     finally:
         if player_id in connected_clients:
             del connected_clients[player_id]
             await notify_all(json.dumps({'type': 'remove_player', 'id': player_id}))
-            print(f"Jogador {player_id} removido da lista de conectados.")
+            print(f"[SocketServer] Jogador {player_id} removido da lista de conectados.")
 
-async def main():
+async def start_socket_server():
     server = await websockets.serve(handler, 'localhost', 8765)
-    print("Servidor WebSocket iniciado na porta 8765")
+    print("[SocketServer] Servidor iniciado na porta 8765")
     decay_task = asyncio.create_task(decay_energy())
     spawn_task = asyncio.create_task(spawn_batteries())
     try:
@@ -177,6 +177,3 @@ async def main():
         server.close()
         await server.wait_closed()
         print("Servidor WebSocket encerrado")
-
-if __name__ == "__main__":
-    asyncio.run(main())
